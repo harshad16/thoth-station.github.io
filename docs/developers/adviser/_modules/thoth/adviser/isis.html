@@ -155,19 +155,17 @@
 <div class="viewcode-block" id="Isis"><a class="viewcode-back" href="../../../thoth.adviser.html#thoth.adviser.isis.Isis">[docs]</a><span class="k">class</span> <span class="nc">Isis</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A singleton like object to handle Isis wrapper.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isis_api_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Instantiate singleton wrapper.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isis_api_url</span> <span class="o">=</span> <span class="n">isis_api_url</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_isis_api_instance</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delegate any call to Isis API.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isis_api_instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_isis_api_instance</span> <span class="o">=</span> <span class="n">_IsisApi</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_isis_api_instance</span> <span class="o">=</span> <span class="n">_IsisApi</span><span class="p">(</span><span class="n">isis_api_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_isis_api_url</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_isis_api_instance</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span></div>
-
-
-<span class="n">ISIS_API</span> <span class="o">=</span> <span class="n">Isis</span><span class="p">()</span>
 </pre></div>
 
           </div>
