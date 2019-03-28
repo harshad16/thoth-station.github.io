@@ -139,23 +139,26 @@
     <span class="n">artifact_hash_sha256</span> <span class="o">=</span> <span class="n">VertexProperty</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">String</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="RuntimeEnvironment"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.models.RuntimeEnvironment">[docs]</a><span class="k">class</span> <span class="nc">RuntimeEnvironment</span><span class="p">(</span><span class="n">VertexBase</span><span class="p">):</span>
+<div class="viewcode-block" id="EnvironmentBase"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.models.EnvironmentBase">[docs]</a><span class="k">class</span> <span class="nc">EnvironmentBase</span><span class="p">(</span><span class="n">VertexBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A base class for environment types.&quot;&quot;&quot;</span>
+
+    <span class="n">environment_name</span> <span class="o">=</span> <span class="n">VertexProperty</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">String</span><span class="p">)</span>
+    <span class="n">python_version</span> <span class="o">=</span> <span class="n">VertexProperty</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
+    <span class="c1"># TODO: capture hashes of layers to be precise?</span>
+
+
+<div class="viewcode-block" id="RuntimeEnvironment"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.models.RuntimeEnvironment">[docs]</a><span class="k">class</span> <span class="nc">RuntimeEnvironment</span><span class="p">(</span><span class="n">EnvironmentBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Environment such as container image which consists of various packages.&quot;&quot;&quot;</span>
 
-    <span class="n">runtime_environment_name</span> <span class="o">=</span> <span class="n">VertexProperty</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">String</span><span class="p">)</span>
     <span class="n">os_name</span> <span class="o">=</span> <span class="n">VertexProperty</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">os_version</span> <span class="o">=</span> <span class="n">VertexProperty</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">python_version</span> <span class="o">=</span> <span class="n">VertexProperty</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">cuda_version</span> <span class="o">=</span> <span class="n">VertexProperty</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
-    <span class="c1"># TODO: capture hashes of layers to be precise?</span>
 
 
-<div class="viewcode-block" id="BuildtimeEnvironment"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.models.BuildtimeEnvironment">[docs]</a><span class="k">class</span> <span class="nc">BuildtimeEnvironment</span><span class="p">(</span><span class="n">VertexBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Environment such as container image which consists of various packages.&quot;&quot;&quot;</span>
-
-    <span class="n">buildtime_environment_name</span> <span class="o">=</span> <span class="n">VertexProperty</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">String</span><span class="p">)</span>
-    <span class="n">python_version</span> <span class="o">=</span> <span class="n">VertexProperty</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
-    <span class="c1"># TODO: capture hashes of layers to be precise?</span>
+<div class="viewcode-block" id="BuildtimeEnvironment"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.models.BuildtimeEnvironment">[docs]</a><span class="k">class</span> <span class="nc">BuildtimeEnvironment</span><span class="p">(</span><span class="n">EnvironmentBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Environment such as container image which consists of various packages.&quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="SoftwareStackBase"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.models.SoftwareStackBase">[docs]</a><span class="k">class</span> <span class="nc">SoftwareStackBase</span><span class="p">(</span><span class="n">VertexBase</span><span class="p">):</span>
@@ -233,7 +236,9 @@
     <span class="c1"># gpu_cores = VertexProperty(properties.Integer)</span>
     <span class="c1"># gpu_memory_size = VertexProperty(properties.Integer)</span>
 
-    <span class="n">ram_size</span> <span class="o">=</span> <span class="n">VertexProperty</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">Integer</span><span class="p">)</span></div>
+    <span class="c1"># We use float here as using Integer can lead to serialization/deserialization</span>
+    <span class="c1"># issues on Graph database side. JanusGraph treats Integer in fixed size of int32.</span>
+    <span class="n">ram_size</span> <span class="o">=</span> <span class="n">VertexProperty</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EcosystemSolver"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.models.EcosystemSolver">[docs]</a><span class="k">class</span> <span class="nc">EcosystemSolver</span><span class="p">(</span><span class="n">VertexBase</span><span class="p">):</span>
