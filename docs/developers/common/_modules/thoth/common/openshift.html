@@ -865,6 +865,7 @@
         <span class="n">image</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
+        <span class="n">environment_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">registry_user</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">registry_password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -877,6 +878,9 @@
             <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span>
                 <span class="s2">&quot;Unable to schedule package extract job without backend namespace being set&quot;</span>
             <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">environment_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;runtime&#39;</span><span class="p">,</span> <span class="s1">&#39;buildtime&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown environment type </span><span class="si">%r</span><span class="s2">, has to be runtime or buildtime&quot;</span><span class="p">)</span>
 
         <span class="n">job_id</span> <span class="o">=</span> <span class="n">job_id</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_id</span><span class="p">(</span><span class="s2">&quot;package-extract&quot;</span><span class="p">)</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
@@ -895,6 +899,7 @@
         <span class="n">image</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
+        <span class="n">environment_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">registry_user</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">registry_password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -909,6 +914,9 @@
                 <span class="s2">&quot;Running package-extract requires middletier namespace to be specified&quot;</span>
             <span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">environment_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;runtime&#39;</span><span class="p">,</span> <span class="s1">&#39;buildtime&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown environment type </span><span class="si">%r</span><span class="s2">, has to be runtime or buildtime&quot;</span><span class="p">)</span>
+
         <span class="n">template</span> <span class="o">=</span> <span class="n">template</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_package_extract_template</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">set_template_parameters</span><span class="p">(</span>
@@ -918,7 +926,10 @@
             <span class="n">THOTH_ANALYZER_NO_TLS_VERIFY</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="ow">not</span> <span class="n">verify_tls</span><span class="p">),</span>
             <span class="n">THOTH_ANALYZER_OUTPUT</span><span class="o">=</span><span class="n">output</span><span class="p">,</span>
             <span class="n">THOTH_PACKAGE_EXTRACT_JOB_ID</span><span class="o">=</span><span class="n">job_id</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_id</span><span class="p">(</span><span class="s2">&quot;package-extract&quot;</span><span class="p">),</span>
-            <span class="n">THOTH_PACKAGE_EXTRACT_METADATA</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;origin&quot;</span><span class="p">:</span> <span class="n">origin</span><span class="p">}),</span>
+            <span class="n">THOTH_PACKAGE_EXTRACT_METADATA</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+                <span class="s2">&quot;origin&quot;</span><span class="p">:</span> <span class="n">origin</span><span class="p">,</span>
+                <span class="s2">&quot;environment_type&quot;</span><span class="p">:</span> <span class="n">environment_type</span><span class="p">,</span>
+            <span class="p">}),</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">registry_user</span> <span class="ow">and</span> <span class="n">registry_password</span><span class="p">:</span>
