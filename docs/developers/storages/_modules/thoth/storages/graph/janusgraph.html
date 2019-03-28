@@ -61,6 +61,7 @@
 
 <span class="sd">&quot;&quot;&quot;A Gremlin server adapter communicating via a web socket.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -74,6 +75,7 @@
 <span class="kn">from</span> <span class="nn">aiogremlin.process.graph_traversal</span> <span class="k">import</span> <span class="n">AsyncGraphTraversal</span>
 <span class="kn">from</span> <span class="nn">gremlin_python.process.traversal</span> <span class="k">import</span> <span class="n">Order</span>
 <span class="kn">from</span> <span class="nn">gremlin_python.process.traversal</span> <span class="k">import</span> <span class="n">without</span>
+<span class="kn">from</span> <span class="nn">gremlin_python.process.traversal</span> <span class="k">import</span> <span class="n">within</span>
 <span class="kn">from</span> <span class="nn">gremlin_python.process.traversal</span> <span class="k">import</span> <span class="n">gt</span>
 <span class="kn">from</span> <span class="nn">gremlin_python.process.graph_traversal</span> <span class="k">import</span> <span class="n">inE</span>
 <span class="kn">from</span> <span class="nn">gremlin_python.process.graph_traversal</span> <span class="k">import</span> <span class="nb">id</span> <span class="k">as</span> <span class="n">id_</span>
@@ -85,7 +87,6 @@
 <span class="kn">from</span> <span class="nn">thoth.common</span> <span class="k">import</span> <span class="n">datetime_str2timestamp</span>
 <span class="kn">from</span> <span class="nn">thoth.common</span> <span class="k">import</span> <span class="n">timestamp2datetime</span>
 <span class="kn">from</span> <span class="nn">thoth.common</span> <span class="k">import</span> <span class="n">OpenShift</span>
-<span class="kn">from</span> <span class="nn">thoth.common</span> <span class="k">import</span> <span class="n">RuntimeEnvironment</span>
 
 <span class="kn">from</span> <span class="nn">..base</span> <span class="k">import</span> <span class="n">StorageBase</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">NotFoundError</span>
@@ -110,10 +111,11 @@
 <span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">RunsOn</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">BuildsIn</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">BuildsOn</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">BuildtimeEnvironment</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">RPMPackageVersion</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">RPMRequirement</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">RuntimeEnvironment</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">EnvironmentBase</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">RuntimeEnvironment</span> <span class="k">as</span> <span class="n">RuntimeEnvironmentModel</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">BuildtimeEnvironment</span> <span class="k">as</span> <span class="n">BuildtimeEnvironmentModel</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">HardwareInformation</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">Solved</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="k">import</span> <span class="n">AdviserSoftwareStack</span>
@@ -257,23 +259,13 @@
 
         <span class="k">return</span> <span class="n">result</span></div>
 
-    <span class="k">def</span> <span class="nf">register_python_package_index</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">warehouse_api_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verify_ssl</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">warehouse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">PythonPackageIndex</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return a list of available Python package indexes.&quot;&quot;&quot;</span>
-        <span class="n">python_package_index</span> <span class="o">=</span> <span class="n">PythonPackageIndex</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span>
-            <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">warehouse_api_url</span><span class="o">=</span><span class="n">warehouse_api_url</span><span class="p">,</span> <span class="n">verify_ssl</span><span class="o">=</span><span class="n">verify_ssl</span><span class="p">,</span> <span class="n">warehouse</span><span class="o">=</span><span class="n">warehouse</span>
-        <span class="p">)</span>
-        <span class="n">existed</span> <span class="o">=</span> <span class="n">python_package_index</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">python_package_index</span><span class="p">,</span> <span class="n">existed</span>
-
 <div class="viewcode-block" id="GraphDatabase.runtime_environment_listing"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.janusgraph.GraphDatabase.runtime_environment_listing">[docs]</a>    <span class="k">def</span> <span class="nf">runtime_environment_listing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get listing of runtime environments available.&quot;&quot;&quot;</span>
         <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">V</span><span class="p">()</span>
-            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironment</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironmentModel</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s2">&quot;runtime_environment_name&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s2">&quot;environment_name&quot;</span><span class="p">)</span>
             <span class="o">.</span><span class="n">dedup</span><span class="p">()</span>
             <span class="o">.</span><span class="n">order</span><span class="p">()</span>
             <span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">start_offset</span><span class="p">,</span> <span class="n">start_offset</span> <span class="o">+</span> <span class="n">count</span><span class="p">)</span>
@@ -288,9 +280,9 @@
         <span class="sd">&quot;&quot;&quot;Get listing of analyses available for the given environment.&quot;&quot;&quot;</span>
         <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">V</span><span class="p">()</span>
-            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironment</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironmentModel</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;runtime_environment_name&quot;</span><span class="p">,</span> <span class="n">runtime_environment_name</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;environment_name&quot;</span><span class="p">,</span> <span class="n">runtime_environment_name</span><span class="p">)</span>
             <span class="o">.</span><span class="n">inE</span><span class="p">()</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">IsPartOf</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;edge&quot;</span><span class="p">)</span>
@@ -312,9 +304,9 @@
             <span class="c1"># TODO: we could optimize this into a single query</span>
             <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">V</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironment</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironmentModel</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
                 <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;runtime_environment_name&quot;</span><span class="p">,</span> <span class="n">runtime_environment_name</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;environment_name&quot;</span><span class="p">,</span> <span class="n">runtime_environment_name</span><span class="p">)</span>
                 <span class="o">.</span><span class="n">count</span><span class="p">()</span>
                 <span class="o">.</span><span class="n">next</span><span class="p">()</span>
             <span class="p">)</span>
@@ -338,9 +330,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">analysis_document_id</span><span class="p">:</span>
             <span class="n">analysis_document_id</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">V</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironment</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironmentModel</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
                 <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;runtime_environment_name&quot;</span><span class="p">,</span> <span class="n">runtime_environment_name</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;environment_name&quot;</span><span class="p">,</span> <span class="n">runtime_environment_name</span><span class="p">)</span>
                 <span class="o">.</span><span class="n">inE</span><span class="p">()</span>
                 <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">IsPartOf</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
                 <span class="o">.</span><span class="n">order</span><span class="p">()</span>
@@ -356,9 +348,9 @@
 
         <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">V</span><span class="p">()</span>
-            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironment</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironmentModel</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;runtime_environment_name&quot;</span><span class="p">,</span> <span class="n">runtime_environment_name</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;environment_name&quot;</span><span class="p">,</span> <span class="n">runtime_environment_name</span><span class="p">)</span>
             <span class="o">.</span><span class="n">coalesce</span><span class="p">(</span>
                 <span class="n">inE</span><span class="p">()</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">IsPartOf</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;analysis_document_id&quot;</span><span class="p">,</span> <span class="n">analysis_document_id</span><span class="p">)</span><span class="o">.</span><span class="n">outV</span><span class="p">(),</span>
                 <span class="n">constant</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
@@ -444,7 +436,7 @@
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="s2">&quot;creates_stack&quot;</span><span class="p">)</span>
             <span class="o">.</span><span class="n">inV</span><span class="p">()</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="s2">&quot;software_stack&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">InspectionSoftwareStack</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
         <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">package_name</span><span class="p">,</span> <span class="n">package_version</span><span class="p">,</span> <span class="n">index_url</span> <span class="ow">in</span> <span class="n">packages</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
@@ -464,7 +456,7 @@
                 <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="s2">&quot;creates_stack&quot;</span><span class="p">)</span>
                 <span class="o">.</span><span class="n">inV</span><span class="p">()</span>
                 <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="s2">&quot;software_stack&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">InspectionSoftwareStack</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">query</span>
@@ -479,29 +471,10 @@
         <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_stack</span><span class="p">(</span><span class="n">packages</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">toList</span><span class="p">())</span></div>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_compute_python_package_version_avg_performance_on_hw</span><span class="p">(</span>
-        <span class="n">query</span><span class="p">,</span> <span class="n">hardware_specs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">runtime_environment_name</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Extend the avg performance query so that there is taken into account hardware we run on.&quot;&quot;&quot;</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">inV</span><span class="p">()</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironment</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">runtime_environment_name</span><span class="p">:</span>
-            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;runtime_environment_name&quot;</span><span class="p">,</span> <span class="n">runtime_environment_name</span><span class="p">)</span>
-
-        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">outE</span><span class="p">()</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RunsOn</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span><span class="o">.</span><span class="n">inV</span><span class="p">()</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">HardwareInformation</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">attribute_name</span><span class="p">,</span> <span class="n">attribute_value</span> <span class="ow">in</span> <span class="n">hardware_specs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">attribute_name</span><span class="p">,</span> <span class="n">attribute_value</span><span class="p">)</span>
-
-        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">inE</span><span class="p">()</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="s2">&quot;runs_on&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s2">&quot;performance_index&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-
 <div class="viewcode-block" id="GraphDatabase.compute_python_package_version_avg_performance"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.janusgraph.GraphDatabase.compute_python_package_version_avg_performance">[docs]</a>    <span class="k">def</span> <span class="nf">compute_python_package_version_avg_performance</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">packages</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">tuple</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">runtime_environment_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">hardware_specs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get average performance of Python packages on the given runtime environment.</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">packages</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">tuple</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">runtime_environment</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">hardware_specs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get average performance of Python packages on the given runtime environment with hardware specs.</span>
 
 <span class="sd">        We derive this average performance based on software stacks we have</span>
 <span class="sd">        evaluated on the given runtime environment including the given</span>
@@ -512,27 +485,56 @@
 <span class="sd">        they can however include also other packages.</span>
 
 <span class="sd">        Optional parameters additionally slice results - e.g. if runtime_environment is set,</span>
-<span class="sd">        it picks only resutls that match the given parameters criteria.</span>
+<span class="sd">        it picks only results that match the given parameters criteria.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_stack</span><span class="p">(</span><span class="n">packages</span><span class="p">)</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">outE</span><span class="p">()</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RunsIn</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
+        <span class="n">software_stack_ids</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">id</span><span class="p">()</span><span class="o">.</span><span class="n">toList</span><span class="p">())</span>
 
-        <span class="k">if</span> <span class="n">runtime_environment_name</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">hardware_specs</span><span class="p">:</span>
-            <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">query</span><span class="o">.</span><span class="n">inV</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironment</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;runtime_environment_name&quot;</span><span class="p">,</span> <span class="n">runtime_environment_name</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">inE</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RunsIn</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">software_stack_ids</span><span class="p">:</span>
+            <span class="c1"># No software stacks for the given package set found.</span>
+            <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">nan</span>
 
+        <span class="n">query</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">hardware_specs</span><span class="p">:</span>
-            <span class="c1"># We pass runtime environment name to optimize traversal (no need to go back).</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_python_package_version_avg_performance_on_hw</span><span class="p">(</span>
-                <span class="n">query</span><span class="p">,</span> <span class="n">hardware_specs</span><span class="p">,</span> <span class="n">runtime_environment_name</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">V</span><span class="p">()</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">HardwareInformation</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">hardware_specs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+            <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">query</span>
+                <span class="o">.</span><span class="n">inE</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="s2">&quot;runs_on&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;edge&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">outV</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironmentModel</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
             <span class="p">)</span>
 
-        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s2">&quot;performance_index&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">query</span><span class="p">:</span>
+            <span class="c1"># No hardware specs supplied, start in a runtime environment.</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">V</span><span class="p">()</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">RuntimeEnvironmentModel</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">runtime_environment</span><span class="p">:</span>
+            <span class="c1"># We have a specific runtime environment, add attributes of it to the query.</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">runtime_environment</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">query</span>
+            <span class="o">.</span><span class="n">inE</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="s2">&quot;runs_in&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;edge&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">as_</span><span class="p">(</span><span class="s2">&quot;runs_in_edge&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;performance_index&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">outV</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">InspectionSoftwareStack</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">id</span><span class="p">()</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="n">within</span><span class="p">(</span><span class="n">software_stack_ids</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;runs_in_edge&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">dedup</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s2">&quot;performance_index&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="p">)</span>
+
         <span class="k">return</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">query</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GraphDatabase.get_all_versions_python_package"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.janusgraph.GraphDatabase.get_all_versions_python_package">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_versions_python_package</span><span class="p">(</span>
@@ -768,7 +770,7 @@
         <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">E</span><span class="p">()</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;edge&quot;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="n">Requires</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="n">Requires</span><span class="o">.</span><span class="n">__label__</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;analysis_datetime&quot;</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;analysis_document_id&quot;</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;analyzer_name&quot;</span><span class="p">)</span>
@@ -994,13 +996,18 @@
     <span class="k">def</span> <span class="nf">_get_hardware_information</span><span class="p">(</span><span class="n">specs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HardwareInformation</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get hardware information based on requests provided.&quot;&quot;&quot;</span>
         <span class="n">hardware</span> <span class="o">=</span> <span class="n">specs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hardware&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">ram_size</span> <span class="o">=</span> <span class="n">OpenShift</span><span class="o">.</span><span class="n">parse_memory_spec</span><span class="p">(</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="n">specs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">ram_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Convert bytes to GiB, we need float number for Gremlin/JanusGraph serialization</span>
+            <span class="n">ram_size</span> <span class="o">=</span> <span class="n">ram_size</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">HardwareInformation</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span>
             <span class="n">cpu_family</span><span class="o">=</span><span class="n">hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cpu_family&quot;</span><span class="p">),</span>
             <span class="n">cpu_model</span><span class="o">=</span><span class="n">hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cpu_model&quot;</span><span class="p">),</span>
             <span class="n">cpu_physical_cpus</span><span class="o">=</span><span class="n">hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;physical_cpus&quot;</span><span class="p">),</span>
             <span class="n">cpu_model_name</span><span class="o">=</span><span class="n">hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;processor&quot;</span><span class="p">),</span>
             <span class="n">cpu_cores</span><span class="o">=</span><span class="n">OpenShift</span><span class="o">.</span><span class="n">parse_cpu_spec</span><span class="p">(</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;cpu&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="n">specs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">ram_size</span><span class="o">=</span><span class="n">OpenShift</span><span class="o">.</span><span class="n">parse_memory_spec</span><span class="p">(</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="n">specs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">ram_size</span><span class="o">=</span><span class="n">ram_size</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="GraphDatabase.create_python_packages_pipfile"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.janusgraph.GraphDatabase.create_python_packages_pipfile">[docs]</a>    <span class="k">def</span> <span class="nf">create_python_packages_pipfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipfile_locked</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">PythonPackageVersion</span><span class="p">]:</span>
@@ -1075,11 +1082,16 @@
 
 <div class="viewcode-block" id="GraphDatabase.sync_inspection_result"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.janusgraph.GraphDatabase.sync_inspection_result">[docs]</a>    <span class="k">def</span> <span class="nf">sync_inspection_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Sync the given inspection document into the graph database.&quot;&quot;&quot;</span>
-        <span class="n">software_stack</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">software_stack</span><span class="p">,</span> <span class="n">python_version</span><span class="p">,</span> <span class="n">os_name</span><span class="p">,</span> <span class="n">os_version</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">document</span><span class="p">[</span><span class="s2">&quot;specification&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;python&quot;</span><span class="p">):</span>
             <span class="n">software_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_inspection_software_stack_pipfile</span><span class="p">(</span>
                 <span class="n">document</span><span class="p">[</span><span class="s2">&quot;inspection_id&quot;</span><span class="p">],</span> <span class="n">document</span><span class="p">[</span><span class="s2">&quot;specification&quot;</span><span class="p">][</span><span class="s2">&quot;python&quot;</span><span class="p">][</span><span class="s2">&quot;requirements_locked&quot;</span><span class="p">]</span>
             <span class="p">)</span>
+            <span class="n">python_version</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s2">&quot;specification&quot;</span><span class="p">][</span><span class="s2">&quot;python&quot;</span><span class="p">][</span><span class="s2">&quot;requirements&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;requires&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;python_version&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">document</span><span class="p">[</span><span class="s2">&quot;specification&quot;</span><span class="p">][</span><span class="s2">&quot;base&quot;</span><span class="p">]:</span>
+            <span class="c1"># TODO: we should capture os info in inspection report directly.</span>
+            <span class="n">os_name</span><span class="p">,</span> <span class="n">os_version</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s2">&quot;specification&quot;</span><span class="p">][</span><span class="s2">&quot;base&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
 
         <span class="n">environment_name</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s2">&quot;inspection_id&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">document</span><span class="p">[</span><span class="s2">&quot;job_log&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1101,7 +1113,12 @@
                 <span class="c1"># installed any native packages.</span>
                 <span class="n">environment_name</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s2">&quot;specification&quot;</span><span class="p">][</span><span class="s2">&quot;base&quot;</span><span class="p">]</span>
 
-            <span class="n">runtime_environment</span> <span class="o">=</span> <span class="n">RuntimeEnvironment</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span><span class="n">runtime_environment_name</span><span class="o">=</span><span class="n">environment_name</span><span class="p">)</span>
+            <span class="n">runtime_environment</span> <span class="o">=</span> <span class="n">RuntimeEnvironmentModel</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span>
+                <span class="n">environment_name</span><span class="o">=</span><span class="n">environment_name</span><span class="p">,</span>
+                <span class="n">python_version</span><span class="o">=</span><span class="n">python_version</span><span class="p">,</span>
+                <span class="n">os_name</span><span class="o">=</span><span class="n">os_name</span><span class="p">,</span>
+                <span class="n">os_version</span><span class="o">=</span><span class="n">os_version</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">runtime_environment</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
 
             <span class="n">runtime_hardware</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hardware_information</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">&quot;specification&quot;</span><span class="p">][</span><span class="s2">&quot;run&quot;</span><span class="p">][</span><span class="s2">&quot;requests&quot;</span><span class="p">])</span>
@@ -1143,7 +1160,7 @@
                     <span class="n">run_error</span><span class="o">=</span><span class="n">run_error</span><span class="p">,</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
 
-        <span class="n">buildtime_environment</span> <span class="o">=</span> <span class="n">BuildtimeEnvironment</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span><span class="n">buildtime_environment_name</span><span class="o">=</span><span class="n">environment_name</span><span class="p">)</span>
+        <span class="n">buildtime_environment</span> <span class="o">=</span> <span class="n">BuildtimeEnvironmentModel</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span><span class="n">environment_name</span><span class="o">=</span><span class="n">environment_name</span><span class="p">)</span>
         <span class="n">buildtime_environment</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
 
         <span class="n">buildtime_hardware</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hardware_information</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">&quot;specification&quot;</span><span class="p">][</span><span class="s2">&quot;build&quot;</span><span class="p">][</span><span class="s2">&quot;requests&quot;</span><span class="p">])</span>
@@ -1223,6 +1240,7 @@
         <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">V</span><span class="p">()</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="s2">&quot;python_package_version&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;package_name&quot;</span><span class="p">,</span> <span class="n">package_name</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;package_version&quot;</span><span class="p">,</span> <span class="n">package_version</span><span class="p">)</span>
             <span class="o">.</span><span class="n">inE</span><span class="p">()</span>
@@ -1268,8 +1286,8 @@
         <span class="n">runtime_environment_name</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">operating_system</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">operating_system</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
         <span class="p">)</span>
-        <span class="n">runtime_environment</span> <span class="o">=</span> <span class="n">RuntimeEnvironment</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span>
-            <span class="n">runtime_environment_name</span><span class="o">=</span><span class="n">runtime_environment_name</span><span class="p">,</span>
+        <span class="n">runtime_environment</span> <span class="o">=</span> <span class="n">RuntimeEnvironmentModel</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span>
+            <span class="n">environment_name</span><span class="o">=</span><span class="n">runtime_environment_name</span><span class="p">,</span>
             <span class="n">os_name</span><span class="o">=</span><span class="n">operating_system</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
             <span class="n">os_version</span><span class="o">=</span><span class="n">operating_system</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">),</span>
             <span class="o">**</span><span class="n">runtime_info</span><span class="p">,</span>
@@ -1528,7 +1546,7 @@
                 <span class="n">_LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to sync unparsed Python package, error is not fatal: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">unparsed</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_deb_sync_analysis_result</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">document_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">runtime_environment</span><span class="p">:</span> <span class="n">RuntimeEnvironment</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">document_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">EnvironmentBase</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Sync results of deb packages found in the given container image.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">deb_package_info</span> <span class="ow">in</span> <span class="n">document</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">][</span><span class="s2">&quot;deb-dependencies&quot;</span><span class="p">]:</span>
@@ -1551,7 +1569,7 @@
 
                 <span class="n">IsPartOf</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span>
                     <span class="n">source</span><span class="o">=</span><span class="n">deb_package_version</span><span class="p">,</span>
-                    <span class="n">target</span><span class="o">=</span><span class="n">runtime_environment</span><span class="p">,</span>
+                    <span class="n">target</span><span class="o">=</span><span class="n">environment</span><span class="p">,</span>
                     <span class="n">analysis_datetime</span><span class="o">=</span><span class="n">datetime_str2timestamp</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;datetime&quot;</span><span class="p">]),</span>
                     <span class="n">analysis_document_id</span><span class="o">=</span><span class="n">document_id</span><span class="p">,</span>
                     <span class="n">analyzer_name</span><span class="o">=</span><span class="n">document</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;analyzer&quot;</span><span class="p">],</span>
@@ -1586,7 +1604,7 @@
                 <span class="n">_LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to sync debian package, error is not fatal: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">deb_package_info</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_rpm_sync_analysis_result</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">document_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">runtime_environment</span><span class="p">:</span> <span class="n">RuntimeEnvironment</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">document_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">EnvironmentBase</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Sync results of RPMs found in the given container image.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">rpm_package_info</span> <span class="ow">in</span> <span class="n">document</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">][</span><span class="s2">&quot;rpm-dependencies&quot;</span><span class="p">]:</span>
@@ -1612,7 +1630,7 @@
 
                 <span class="n">IsPartOf</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span>
                     <span class="n">source</span><span class="o">=</span><span class="n">rpm_package_version</span><span class="p">,</span>
-                    <span class="n">target</span><span class="o">=</span><span class="n">runtime_environment</span><span class="p">,</span>
+                    <span class="n">target</span><span class="o">=</span><span class="n">environment</span><span class="p">,</span>
                     <span class="n">analysis_datetime</span><span class="o">=</span><span class="n">datetime_str2timestamp</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;datetime&quot;</span><span class="p">]),</span>
                     <span class="n">analysis_document_id</span><span class="o">=</span><span class="n">document_id</span><span class="p">,</span>
                     <span class="n">analyzer_name</span><span class="o">=</span><span class="n">document</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;analyzer&quot;</span><span class="p">],</span>
@@ -1642,7 +1660,7 @@
                     <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_python_sync_analysis_result</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">document_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">runtime_environment</span><span class="p">:</span> <span class="n">RuntimeEnvironment</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">document_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">EnvironmentBase</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Sync results of Python packages found in the given container image.&quot;&quot;&quot;</span>
         <span class="c1"># or [] should go to analyzer to be consistent</span>
@@ -1671,7 +1689,7 @@
 
                 <span class="n">IsPartOf</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span>
                     <span class="n">source</span><span class="o">=</span><span class="n">python_package_version</span><span class="p">,</span>
-                    <span class="n">target</span><span class="o">=</span><span class="n">runtime_environment</span><span class="p">,</span>
+                    <span class="n">target</span><span class="o">=</span><span class="n">environment</span><span class="p">,</span>
                     <span class="n">analysis_datetime</span><span class="o">=</span><span class="n">datetime_str2timestamp</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;datetime&quot;</span><span class="p">]),</span>
                     <span class="n">analysis_document_id</span><span class="o">=</span><span class="n">document_id</span><span class="p">,</span>
                     <span class="n">analyzer_name</span><span class="o">=</span><span class="n">document</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;analyzer&quot;</span><span class="p">],</span>
@@ -1719,6 +1737,7 @@
         <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">V</span><span class="p">()</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="s2">&quot;python_package_version&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;package_name&quot;</span><span class="p">,</span> <span class="n">package_name</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;package_version&quot;</span><span class="p">,</span> <span class="n">package_version</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;ecosystem&quot;</span><span class="p">,</span> <span class="s2">&quot;pypi&quot;</span><span class="p">)</span>
@@ -1745,6 +1764,7 @@
         <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">V</span><span class="p">()</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="s2">&quot;python_package_version&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;package_name&quot;</span><span class="p">,</span> <span class="n">package_name</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;package_version&quot;</span><span class="p">,</span> <span class="n">package_version</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;index_url&quot;</span><span class="p">,</span> <span class="n">index_url</span><span class="p">)</span>
@@ -1763,6 +1783,7 @@
         <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">V</span><span class="p">()</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__label__&quot;</span><span class="p">,</span> <span class="s2">&quot;python_package_version&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;vertex&quot;</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;package_name&quot;</span><span class="p">,</span> <span class="n">package_name</span><span class="p">)</span>
             <span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s2">&quot;package_version&quot;</span><span class="p">,</span> <span class="n">package_version</span><span class="p">)</span>
             <span class="o">.</span><span class="n">flatMap</span><span class="p">(</span><span class="n">outE</span><span class="p">()</span><span class="o">.</span><span class="n">inV</span><span class="p">())</span>
@@ -1780,15 +1801,25 @@
 <div class="viewcode-block" id="GraphDatabase.sync_analysis_result"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.janusgraph.GraphDatabase.sync_analysis_result">[docs]</a>    <span class="nd">@enable_vertex_cache</span>
     <span class="k">def</span> <span class="nf">sync_analysis_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Sync the given analysis result to the graph database.&quot;&quot;&quot;</span>
+        <span class="n">environment_type</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;arguments&quot;</span><span class="p">][</span><span class="s2">&quot;thoth-package-extract&quot;</span><span class="p">][</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;environment_type&quot;</span><span class="p">]</span>
         <span class="c1"># TODO: we should sync also origin of analysed images</span>
-        <span class="n">runtime_environment</span> <span class="o">=</span> <span class="n">RuntimeEnvironment</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span>
-            <span class="n">runtime_environment_name</span><span class="o">=</span><span class="n">document</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;arguments&quot;</span><span class="p">][</span><span class="s2">&quot;extract-image&quot;</span><span class="p">][</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="n">runtime_environment</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">environment_type</span> <span class="o">==</span> <span class="s2">&quot;runtime&quot;</span><span class="p">:</span>
+            <span class="n">environment</span> <span class="o">=</span> <span class="n">RuntimeEnvironmentModel</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span>
+                <span class="n">environment_name</span><span class="o">=</span><span class="n">document</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;arguments&quot;</span><span class="p">][</span><span class="s2">&quot;extract-image&quot;</span><span class="p">][</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">environment</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">environment_type</span> <span class="o">==</span> <span class="s2">&quot;buildtime&quot;</span><span class="p">:</span>
+            <span class="n">environment</span> <span class="o">=</span> <span class="n">BuildtimeEnvironmentModel</span><span class="o">.</span><span class="n">from_properties</span><span class="p">(</span>
+                <span class="n">environment_name</span><span class="o">=</span><span class="n">document</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;arguments&quot;</span><span class="p">][</span><span class="s2">&quot;extract-image&quot;</span><span class="p">][</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">environment</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown environment type </span><span class="si">%r</span><span class="s2">, should be buildtime or runtime&quot;</span> <span class="o">%</span> <span class="n">environment_type</span><span class="p">)</span>
+
         <span class="n">document_id</span> <span class="o">=</span> <span class="n">AnalysisResultsStore</span><span class="o">.</span><span class="n">get_document_id</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rpm_sync_analysis_result</span><span class="p">(</span><span class="n">document_id</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">runtime_environment</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_deb_sync_analysis_result</span><span class="p">(</span><span class="n">document_id</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">runtime_environment</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_python_sync_analysis_result</span><span class="p">(</span><span class="n">document_id</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">runtime_environment</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rpm_sync_analysis_result</span><span class="p">(</span><span class="n">document_id</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">environment</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deb_sync_analysis_result</span><span class="p">(</span><span class="n">document_id</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">environment</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_python_sync_analysis_result</span><span class="p">(</span><span class="n">document_id</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="n">environment</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GraphDatabase.register_python_package_index"><a class="viewcode-back" href="../../../../thoth.storages.graph.html#thoth.storages.graph.janusgraph.GraphDatabase.register_python_package_index">[docs]</a>    <span class="k">def</span> <span class="nf">register_python_package_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">warehouse_api_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verify_ssl</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Register the given Python package index in the graph database.&quot;&quot;&quot;</span>
