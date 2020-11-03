@@ -16,17 +16,10 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Advised manifest changes" href="manifest_changes.html" />
     <link rel="prev" title="Predictor in Thoth’s adviser" href="predictor.html" />
-
    
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-123174547-2']);
-  _gaq.push(['_trackPageview']);
-</script>
 
   </head><body>
   
@@ -126,12 +119,12 @@ found).</p>
 <span class="n">_LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="nd">@attr</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@attr.s</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CvePenalizationStep</span><span class="p">(</span><span class="n">Step</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Penalization based on CVE being present in stack.&quot;&quot;&quot;</span>
 
-    <span class="n">CONFIGURATION_DEFAULT</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;package_name&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;cve_penalization&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">}</span>
-    <span class="n">CONFIGURATION_SCHEMA</span><span class="p">:</span> <span class="n">Schema</span> <span class="o">=</span> <span class="n">Schema</span><span class="p">({</span><span class="n">Required</span><span class="p">(</span><span class="s2">&quot;package_name&quot;</span><span class="p">):</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Required</span><span class="p">(</span><span class="s2">&quot;cve_penalization&quot;</span><span class="p">):</span> <span class="nb">float</span><span class="p">})</span>
+    <span class="n">CONFIGURATION_DEFAULT</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;package_name&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;cve_penalization&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">}</span>
+    <span class="n">CONFIGURATION_SCHEMA</span><span class="p">:</span> <span class="n">Schema</span> <span class="o">=</span> <span class="n">Schema</span><span class="p">({</span><span class="n">Required</span><span class="p">(</span><span class="s2">&quot;package_name&quot;</span><span class="p">):</span> <span class="bp">None</span><span class="p">,</span> <span class="n">Required</span><span class="p">(</span><span class="s2">&quot;cve_penalization&quot;</span><span class="p">):</span> <span class="nb">float</span><span class="p">})</span>
     <span class="n">_JUSTIFICATION_LINK</span> <span class="o">=</span> <span class="n">jl</span><span class="p">(</span><span class="s2">&quot;cve&quot;</span><span class="p">)</span>
 
     <span class="c1"># ...</span>
@@ -144,7 +137,7 @@ found).</p>
             <span class="p">)</span>
         <span class="k">except</span> <span class="n">NotFoundError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="n">_LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Package </span><span class="si">%r</span><span class="s2"> in version </span><span class="si">%r</span><span class="s2"> not found: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="bp">None</span>
 
         <span class="k">if</span> <span class="n">cve_records</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="p">[</span><span class="s2">&quot;cve_penalization&quot;</span><span class="p">],</span> <span class="p">[{</span>
@@ -153,7 +146,7 @@ found).</p>
                 <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Found at least one vulnerability for the given package:&quot;</span>
             <span class="p">}]</span>
 
-        <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">None</span>
 </pre></div>
 </div>
 <p>The value returned corresponds to a list of justifications that should be
@@ -181,7 +174,7 @@ during or after the resolution process is done:</p>
 <span class="n">_LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="nd">@attr</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@attr.s</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">UbiBoot</span><span class="p">(</span><span class="n">Boot</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Remap UBI to RHEL.</span>
 
@@ -193,7 +186,7 @@ during or after the resolution process is done:</p>
 
     <span class="c1"># ...</span>
 
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Remap UBI to RHEL as Thoth keeps track of RHEL and UBI is ABI compatible.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">runtime_environment</span><span class="o">.</span><span class="n">operating_system</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;ubi&quot;</span><span class="p">:</span>
             <span class="n">_LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> - see </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_MESSAGE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_JUSTIFICATION_LINK</span><span class="p">)</span>
@@ -260,15 +253,18 @@ during or after the resolution process is done:</p>
     </div>
 
   
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123174547-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-123174547-1');
+    </script>
 
   </body>
 </html>

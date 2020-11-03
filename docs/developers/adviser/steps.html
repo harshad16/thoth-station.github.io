@@ -16,17 +16,10 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Stride pipeline unit type" href="strides.html" />
     <link rel="prev" title="Sieve pipeline unit type" href="sieves.html" />
-
    
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-123174547-2']);
-  _gaq.push(['_trackPageview']);
-</script>
 
   </head><body>
   
@@ -189,18 +182,18 @@ users on actions performed in pipeline units implemented</span></a>.</p>
     <span class="sd">&quot;&quot;&quot;Filter out numpy causing issues in upstream TensorFlow==1.9.0.&quot;&quot;&quot;</span>
 
     <span class="c1"># This pipeline unit is specific for &quot;numpy&quot;.</span>
-    <span class="n">CONFIGURATION_DEFAULT</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;package_name&quot;</span><span class="p">:</span> <span class="s2">&quot;numpy&quot;</span><span class="p">,</span> <span class="s2">&quot;multi_package_resolution&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+    <span class="n">CONFIGURATION_DEFAULT</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;package_name&quot;</span><span class="p">:</span> <span class="s2">&quot;numpy&quot;</span><span class="p">,</span> <span class="s2">&quot;multi_package_resolution&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">package_version</span><span class="p">:</span> <span class="n">PackageVersion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]]:</span>
         <span class="sd">&quot;&quot;&quot;The main entry-point for step implementation demonstration.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">resolved_dependencies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">,</span> <span class="s2">&quot;1.9.0&quot;</span><span class="p">,</span> <span class="s2">&quot;https://pypi.org/simple&quot;</span><span class="p">):</span>
             <span class="c1"># Accept any other state change.</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="bp">None</span>
 
         <span class="n">package_version_tuple</span> <span class="o">=</span> <span class="n">package_version</span><span class="o">.</span><span class="n">to_tuple</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">package_version_tuple</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span> <span class="s2">&quot;1.17.0&quot;</span><span class="p">,</span> <span class="s2">&quot;https://pypi.org/simple&quot;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">NotAcceptable</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Package </span><span class="si">{</span><span class="n">package_version_tuple</span><span class="si">!r}</span><span class="s2"> has known issues with upstream tensorflow in version 1.9.0 due to API incompatibility&quot;</span>
+                <span class="n">f</span><span class="s2">&quot;Package {package_version_tuple!r} has known issues with upstream tensorflow in version 1.9.0 due to API incompatibility&quot;</span>
             <span class="p">)</span>
 </pre></div>
 </div>
@@ -256,15 +249,18 @@ See <a class="reference internal" href="unit.html#unit"><span class="std std-ref
     </div>
 
   
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123174547-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-123174547-1');
+    </script>
 
   </body>
 </html>

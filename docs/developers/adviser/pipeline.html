@@ -16,17 +16,10 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Thoth’s resolver" href="resolver.html" />
     <link rel="prev" title="Configuring and setting up adviser in a cluster" href="deployment.html" />
-
    
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-123174547-2']);
-  _gaq.push(['_trackPageview']);
-</script>
 
   </head><body>
   
@@ -97,7 +90,7 @@ computing recommendations:</p>
 <span class="n">resolver</span> <span class="o">=</span> <span class="n">Resolver</span><span class="o">.</span><span class="n">get_adviser_instance</span><span class="p">(</span>
     <span class="n">beam_width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">count</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-    <span class="n">library_usage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">library_usage</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
     <span class="n">limit</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
     <span class="n">limit_latest_versions</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
     <span class="n">predictor</span><span class="o">=</span><span class="n">AdaptiveSimulatedAnnealing</span><span class="p">(),</span>
@@ -105,8 +98,8 @@ computing recommendations:</p>
     <span class="n">recommendation_type</span><span class="o">=</span><span class="n">RecommendationType</span><span class="o">.</span><span class="n">LATEST</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">report</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">with_devel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">with_devel</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 </pre></div>
 </div>
 <p>As you can see above, the resolver has quite a few arguments to be passed:</p>
@@ -261,7 +254,7 @@ TensorFlow application:</p>
        <span class="c1">#</span>
        <span class="c1"># The same method `is_included&#39; can be used to inspect if pre-requisite pipeline</span>
        <span class="c1"># units are present in the pipeline configuration.</span>
-       <span class="k">return</span> <span class="kc">None</span>
+       <span class="k">return</span> <span class="bp">None</span>
 
     <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">library_usage</span> <span class="ow">and</span> <span class="s2">&quot;tf.nn.conv2d&quot;</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">library_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">,</span> <span class="p">{}):</span>
        <span class="c1"># As an example - adjust parameter `score_factor&#39; of this pipeline</span>
@@ -411,15 +404,18 @@ used</span></a>.</p>
     </div>
 
   
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123174547-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-123174547-1');
+    </script>
 
   </body>
 </html>

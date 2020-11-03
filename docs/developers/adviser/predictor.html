@@ -16,17 +16,10 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Justifications by the recommendation engine" href="justifications.html" />
     <link rel="prev" title="Thoth’s resolver" href="resolver.html" />
-
    
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-123174547-2']);
-  _gaq.push(['_trackPageview']);
-</script>
 
   </head><body>
   
@@ -91,7 +84,7 @@ MDP in the resolver’s implementation.</p>
 <span class="kn">from</span> <span class="nn">thoth.adviser</span> <span class="kn">import</span> <span class="n">State</span>
 
 
-<span class="nd">@attr</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@attr.s</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MyPredictor</span><span class="p">(</span><span class="n">Predictor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An example predictor implementation.&quot;&quot;&quot;</span>
 
@@ -135,7 +128,7 @@ states present in the beam:</p>
     <span class="c1"># Could be simplified to:</span>
     <span class="c1">#   return random.randint(0, beam.size - 1)</span>
     <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">beam</span><span class="o">.</span><span class="n">iter_states</span><span class="p">()):</span>
-        <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">((</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">((</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">)):</span>
             <span class="k">return</span> <span class="n">state</span><span class="p">,</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">unresolved_dependencies</span><span class="p">))</span>
 
     <span class="c1"># Fallback to the first state.</span>
@@ -160,7 +153,7 @@ internal structures to optimize time spent in predictor.</p>
 instantiating predictor programmatically.  If any adjustment is desired before
 running the resolution pipeline, a user can implement <a class="reference internal" href="thoth.adviser.html#thoth.adviser.predictor.Predictor.pre_run" title="thoth.adviser.predictor.Predictor.pre_run"><code class="xref py py-func docutils literal notranslate"><span class="pre">Predictor.pre_run</span></code></a> method that is called with
 initialized adviser context before the stack generation pipeline is triggered:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pre_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pre_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Implement any pre-run initialization here.&quot;&quot;&quot;</span>
 </pre></div>
 </div>
@@ -229,15 +222,18 @@ the temperature decreases.</p>
     </div>
 
   
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123174547-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-123174547-1');
+    </script>
 
   </body>
 </html>

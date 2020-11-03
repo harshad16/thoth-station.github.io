@@ -16,17 +16,10 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Thoth’s architecture" href="architecture.html" />
     <link rel="prev" title="Thoth’s adviser recommendation format" href="compatibility.html" />
-
    
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-123174547-2']);
-  _gaq.push(['_trackPageview']);
-</script>
 
   </head><body>
   
@@ -125,13 +118,13 @@ for the <a class="reference external" href="https://github.com/thoth-station/adv
 packages from there.</p>
 <p>To activate virtual environment permanently, issue:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pipenv shell
-<span class="gp gp-VirtualEnv">(adviser)</span><span class="gp">$</span>
+<span class="gp">(adviser)$</span>
 </pre></div>
 </div>
 <p>Your shell prompt will change (showing that you are inside a virtual
 environment) and you can run for example Python interpret to run some of the
 Python code provided:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(adviser)</span><span class="gp">$</span> python3
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">(adviser)$</span> python3
 <span class="gp">&gt;</span>&gt;&gt; from thoth.adviser import __version__
 <span class="gp">&gt;</span>&gt;&gt; print<span class="o">(</span>__version__<span class="o">)</span>
 </pre></div>
@@ -363,15 +356,18 @@ OpenShift’s master to schedule workload in the cluster.</p>
     </div>
 
   
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123174547-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-123174547-1');
+    </script>
 
   </body>
 </html>

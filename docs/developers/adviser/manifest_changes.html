@@ -16,17 +16,10 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="A pipeline unit" href="unit.html" />
     <link rel="prev" title="Justifications by the recommendation engine" href="justifications.html" />
-
    
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-123174547-2']);
-  _gaq.push(['_trackPageview']);
-</script>
 
   </head><body>
   
@@ -98,11 +91,11 @@ the deployment config.</p>
     <span class="k">def</span> <span class="nf">should_include</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">builder_context</span><span class="p">:</span> <span class="s2">&quot;PipelineBuilderContext&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;Include this pipeline unit only if it hasn&#39;t been included.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">builder_context</span><span class="o">.</span><span class="n">is_included</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-           <span class="k">return</span> <span class="kc">None</span>
+           <span class="k">return</span> <span class="bp">None</span>
 
         <span class="k">return</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Advise manifest changes for intel-tensorflow.&quot;&quot;&quot;</span>
         <span class="n">state</span><span class="o">.</span><span class="n">advised_manifest_changes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ADVISED_MANIFEST_CHANGES</span><span class="p">)</span>
 </pre></div>
@@ -147,15 +140,18 @@ Patch object is evaluated until it succeeds. See <a class="reference external" h
     </div>
 
   
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123174547-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-123174547-1');
+    </script>
 
   </body>
 </html>

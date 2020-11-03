@@ -14,17 +14,10 @@
     <script type="text/javascript" src="/assets/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-
    
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-123174547-2']);
-  _gaq.push(['_trackPageview']);
-</script>
 
   </head><body>
   
@@ -72,56 +65,56 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Set</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Generator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Iterator</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">matplotlib.font_manager</span> <span class="kn">import</span> <span class="n">FontProperties</span>
-<span class="kn">from</span> <span class="nn">thoth.common</span> <span class="kn">import</span> <span class="n">get_justification_link</span> <span class="k">as</span> <span class="n">jl</span>
-<span class="kn">from</span> <span class="nn">thoth.python</span> <span class="kn">import</span> <span class="n">PackageVersion</span>
-<span class="kn">from</span> <span class="nn">thoth.python</span> <span class="kn">import</span> <span class="n">Project</span>
-<span class="kn">from</span> <span class="nn">thoth.storages</span> <span class="kn">import</span> <span class="n">GraphDatabase</span>
-<span class="kn">from</span> <span class="nn">thoth.storages.exceptions</span> <span class="kn">import</span> <span class="n">NotFoundError</span>
+<span class="kn">from</span> <span class="nn">matplotlib.font_manager</span> <span class="k">import</span> <span class="n">FontProperties</span>
+<span class="kn">from</span> <span class="nn">thoth.common</span> <span class="k">import</span> <span class="n">get_justification_link</span> <span class="k">as</span> <span class="n">jl</span>
+<span class="kn">from</span> <span class="nn">thoth.python</span> <span class="k">import</span> <span class="n">PackageVersion</span>
+<span class="kn">from</span> <span class="nn">thoth.python</span> <span class="k">import</span> <span class="n">Project</span>
+<span class="kn">from</span> <span class="nn">thoth.storages</span> <span class="k">import</span> <span class="n">GraphDatabase</span>
+<span class="kn">from</span> <span class="nn">thoth.storages.exceptions</span> <span class="k">import</span> <span class="n">NotFoundError</span>
 
-<span class="kn">from</span> <span class="nn">.beam</span> <span class="kn">import</span> <span class="n">Beam</span>
-<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">Context</span>
-<span class="kn">from</span> <span class="nn">.enums</span> <span class="kn">import</span> <span class="n">DecisionType</span>
-<span class="kn">from</span> <span class="nn">.enums</span> <span class="kn">import</span> <span class="n">RecommendationType</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">BootError</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">CannotProduceStack</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">EagerStopPipeline</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">NotAcceptable</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">NoHistoryKept</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">SkipPackage</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">SieveError</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">StepError</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">StrideError</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">UnresolvedDependencies</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">WrapError</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">PipelineConfigurationError</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">UserLockFileError</span>
-<span class="kn">from</span> <span class="nn">.pipeline_builder</span> <span class="kn">import</span> <span class="n">PipelineBuilder</span>
-<span class="kn">from</span> <span class="nn">.pipeline_config</span> <span class="kn">import</span> <span class="n">PipelineConfig</span>
-<span class="kn">from</span> <span class="nn">.predictor</span> <span class="kn">import</span> <span class="n">Predictor</span>
-<span class="kn">from</span> <span class="nn">.product</span> <span class="kn">import</span> <span class="n">Product</span>
-<span class="kn">from</span> <span class="nn">.report</span> <span class="kn">import</span> <span class="n">Report</span>
-<span class="kn">from</span> <span class="nn">.solver</span> <span class="kn">import</span> <span class="n">PythonPackageGraphSolver</span>
-<span class="kn">from</span> <span class="nn">.state</span> <span class="kn">import</span> <span class="n">State</span>
-<span class="kn">from</span> <span class="nn">.unit</span> <span class="kn">import</span> <span class="n">Unit</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">log_once</span>
+<span class="kn">from</span> <span class="nn">.beam</span> <span class="k">import</span> <span class="n">Beam</span>
+<span class="kn">from</span> <span class="nn">.context</span> <span class="k">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">.enums</span> <span class="k">import</span> <span class="n">DecisionType</span>
+<span class="kn">from</span> <span class="nn">.enums</span> <span class="k">import</span> <span class="n">RecommendationType</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">BootError</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">CannotProduceStack</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">EagerStopPipeline</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">NotAcceptable</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">NoHistoryKept</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">SkipPackage</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">SieveError</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">StepError</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">StrideError</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">UnresolvedDependencies</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">WrapError</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">PipelineConfigurationError</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">UserLockFileError</span>
+<span class="kn">from</span> <span class="nn">.pipeline_builder</span> <span class="k">import</span> <span class="n">PipelineBuilder</span>
+<span class="kn">from</span> <span class="nn">.pipeline_config</span> <span class="k">import</span> <span class="n">PipelineConfig</span>
+<span class="kn">from</span> <span class="nn">.predictor</span> <span class="k">import</span> <span class="n">Predictor</span>
+<span class="kn">from</span> <span class="nn">.product</span> <span class="k">import</span> <span class="n">Product</span>
+<span class="kn">from</span> <span class="nn">.report</span> <span class="k">import</span> <span class="n">Report</span>
+<span class="kn">from</span> <span class="nn">.solver</span> <span class="k">import</span> <span class="n">PythonPackageGraphSolver</span>
+<span class="kn">from</span> <span class="nn">.state</span> <span class="k">import</span> <span class="n">State</span>
+<span class="kn">from</span> <span class="nn">.unit</span> <span class="k">import</span> <span class="n">Unit</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">log_once</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
 
@@ -135,7 +128,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown type for beam width: </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unknown type for beam width: </span><span class="si">{value!r}</span><span class="s2"> is of type {type(value)!r}&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
@@ -155,7 +148,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown type for limit latest versions: </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unknown type for limit latest versions: </span><span class="si">{value!r}</span><span class="s2"> is of type {type(value)!r}&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
@@ -175,7 +168,7 @@
         <span class="k">return</span> <span class="p">{}</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown type for library usage: </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">!r}</span><span class="s2">, a dict expected&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unknown type for library usage: </span><span class="si">{value!r}</span><span class="s2"> is of type {type(value)!r}, a dict expected&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">value</span>
 
@@ -243,10 +236,10 @@
     <span class="k">def</span> <span class="nf">_positive_int_validator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Validate the given attribute - the given attribute should have a value of a positive integer.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attribute </span><span class="si">{</span><span class="n">attribute</span><span class="si">!r}</span><span class="s2"> should be of type int, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">!r}</span><span class="s2"> instead&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Attribute </span><span class="si">{attribute!r}</span><span class="s2"> should be of type int, got {type(value)!r} instead&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Value for attribute </span><span class="si">{</span><span class="n">attribute</span><span class="si">!r}</span><span class="s2"> should be a positive integer, got </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> instead&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Value for attribute </span><span class="si">{attribute!r}</span><span class="s2"> should be a positive integer, got </span><span class="si">{value}</span><span class="s2"> instead&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Context</span><span class="p">:</span>
@@ -308,13 +301,13 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">boot</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
             <span class="k">except</span> <span class="n">NotAcceptable</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Boot pipeline unit </span><span class="si">{</span><span class="n">boot</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2"> failed: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;Boot pipeline unit </span><span class="si">{boot.__class__.__name__!r}</span><span class="s2"> failed: {str(exc)}&quot;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stack_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,}</span>
                 <span class="p">)</span>
                 <span class="k">raise</span> <span class="n">CannotProduceStack</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">stack_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stack_info</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">BootError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to run pipeline boot </span><span class="si">{</span><span class="n">boot</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+                <span class="k">raise</span> <span class="n">BootError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Failed to run pipeline boot </span><span class="si">{boot.__class__.__name__!r}</span><span class="s2">: {str(exc)}&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
 
     <span class="k">def</span> <span class="nf">_run_sieves</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">package_versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PackageVersion</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">log_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
@@ -339,8 +332,8 @@
                     <span class="k">break</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">SieveError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Failed to run sieve </span><span class="si">{</span><span class="n">sieve</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2"> for &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;Python packages </span><span class="si">{</span><span class="p">[</span><span class="n">pv</span><span class="o">.</span><span class="n">to_tuple</span><span class="p">()</span> <span class="k">for</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">package_versions</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="n">f</span><span class="s2">&quot;Failed to run sieve </span><span class="si">{sieve.__class__.__name__!r}</span><span class="s2"> for &quot;</span>
+                        <span class="n">f</span><span class="s2">&quot;Python packages {[pv.to_tuple() for pv in package_versions]}: {str(exc)}&quot;</span>
                     <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
 
         <span class="k">yield from</span> <span class="n">result</span>
@@ -428,8 +421,8 @@
                 <span class="k">return</span> <span class="kc">None</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">StepError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Failed to run step </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2"> for Python package &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">package_version_tuple</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">f</span><span class="s2">&quot;Failed to run step </span><span class="si">{step.__class__.__name__!r}</span><span class="s2"> for Python package &quot;</span>
+                    <span class="n">f</span><span class="s2">&quot;</span><span class="si">{package_version_tuple!r}</span><span class="s2">: {str(exc)}&quot;</span>
                 <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
 
             <span class="k">if</span> <span class="n">step_result</span><span class="p">:</span>
@@ -437,10 +430,10 @@
 
                 <span class="k">if</span> <span class="n">step_score_addition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">step_score_addition</span><span class="p">):</span>
-                        <span class="k">raise</span> <span class="n">StepError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> returned score which is not a number&quot;</span><span class="p">,)</span>
+                        <span class="k">raise</span> <span class="n">StepError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Step </span><span class="si">{step.__class__.__name__}</span><span class="s2"> returned score which is not a number&quot;</span><span class="p">,)</span>
 
                     <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">step_score_addition</span><span class="p">):</span>
-                        <span class="k">raise</span> <span class="n">StepError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> returned score that is infinite&quot;</span><span class="p">,)</span>
+                        <span class="k">raise</span> <span class="n">StepError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Step </span><span class="si">{step.__class__.__name__}</span><span class="s2"> returned score that is infinite&quot;</span><span class="p">,)</span>
 
                     <span class="k">if</span> <span class="n">step_score_addition</span> <span class="o">&gt;</span> <span class="n">step</span><span class="o">.</span><span class="n">SCORE_MAX</span><span class="p">:</span>
                         <span class="n">_LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
@@ -519,7 +512,7 @@
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">StrideError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to run stride </span><span class="si">{</span><span class="n">stride</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+                <span class="k">raise</span> <span class="n">StrideError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Failed to run stride </span><span class="si">{stride.__class__.__name__!r}</span><span class="s2">: {str(exc)}&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
 
         <span class="k">return</span> <span class="kc">True</span>
 
@@ -535,7 +528,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">wrap</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">WrapError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to run wrap </span><span class="si">{</span><span class="n">wrap</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2"> on a final state: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+                <span class="k">raise</span> <span class="n">WrapError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Failed to run wrap </span><span class="si">{wrap.__class__.__name__!r}</span><span class="s2"> on a final state: {str(exc)}&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
 
     <span class="k">def</span> <span class="nf">_prepare_user_lock_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">with_devel</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Perform operations on the user&#39;s lock file required before running the pipeline.</span>
@@ -552,7 +545,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">source_urls</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">enabled_indexes</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">UserLockFileError</span><span class="p">(</span>
                 <span class="s2">&quot;User&#39;s lock file uses one or more indexes that are &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;not enabled: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">source_urls</span> <span class="o">-</span> <span class="n">enabled_indexes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">f</span><span class="s2">&quot;not enabled: {&#39;, &#39;.join(source_urls - enabled_indexes)}&quot;</span>
             <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">package_version</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">iter_dependencies_locked</span><span class="p">(</span><span class="n">with_devel</span><span class="o">=</span><span class="n">with_devel</span><span class="p">):</span>
@@ -588,8 +581,8 @@
                         <span class="k">break</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">UserLockFileError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Could not determine provenance of package </span><span class="si">{</span><span class="n">package_version</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;in version </span><span class="si">{</span><span class="n">package_version</span><span class="o">.</span><span class="n">locked_version</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                        <span class="n">f</span><span class="s2">&quot;Could not determine provenance of package </span><span class="si">{package_version.name!r}</span><span class="s2"> &quot;</span>
+                        <span class="n">f</span><span class="s2">&quot;in version </span><span class="si">{package_version.locked_version!r}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_maybe_score_user_lock_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">with_devel</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">State</span><span class="p">]:</span>
@@ -680,18 +673,18 @@
                 <span class="c1"># database but none was matching the given version range.</span>
                 <span class="n">unresolved</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">package_version</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-                <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;No versions were found for direct dependency </span><span class="si">{</span><span class="n">package_version</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                <span class="n">error_msg</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;No versions were found for direct dependency </span><span class="si">{package_version.name!r}</span><span class="s2">&quot;</span>
                 <span class="n">runtime_environment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">runtime_environment</span>
                 <span class="k">if</span> <span class="n">runtime_environment</span><span class="o">.</span><span class="n">operating_system</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-                    <span class="n">error_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;; operating system </span><span class="si">{</span><span class="n">runtime_environment</span><span class="o">.</span><span class="n">operating_system</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                    <span class="n">error_msg</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot;; operating system </span><span class="si">{runtime_environment.operating_system.name!r}</span><span class="s2">&quot;</span>
                     <span class="k">if</span> <span class="n">runtime_environment</span><span class="o">.</span><span class="n">operating_system</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
-                        <span class="n">error_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; in OS version </span><span class="si">{</span><span class="n">runtime_environment</span><span class="o">.</span><span class="n">operating_system</span><span class="o">.</span><span class="n">version</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                        <span class="n">error_msg</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot; in OS version </span><span class="si">{runtime_environment.operating_system.version!r}</span><span class="s2">&quot;</span>
 
                 <span class="k">if</span> <span class="n">runtime_environment</span><span class="o">.</span><span class="n">python_version</span><span class="p">:</span>
-                    <span class="n">error_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; for Python in version </span><span class="si">{</span><span class="n">runtime_environment</span><span class="o">.</span><span class="n">python_version</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                    <span class="n">error_msg</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot; for Python in version </span><span class="si">{runtime_environment.python_version!r}</span><span class="s2">&quot;</span>
 
                 <span class="k">if</span> <span class="n">runtime_environment</span><span class="o">.</span><span class="n">platform</span><span class="p">:</span>
-                    <span class="n">error_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; using platform </span><span class="si">{</span><span class="n">runtime_environment</span><span class="o">.</span><span class="n">platform</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                    <span class="n">error_msg</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot; using platform </span><span class="si">{runtime_environment.platform!r}</span><span class="s2">&quot;</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stack_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">error_msg</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;link&quot;</span><span class="p">:</span> <span class="n">jl</span><span class="p">(</span><span class="s2">&quot;solve_direct&quot;</span><span class="p">),}</span>
@@ -745,7 +738,7 @@
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">package_versions</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Cannot satisfy direct dependencies - direct dependencies of type </span><span class="si">{</span><span class="n">direct_dependency_name</span><span class="si">!r}</span><span class="s2"> &quot;</span>
+                    <span class="n">f</span><span class="s2">&quot;Cannot satisfy direct dependencies - direct dependencies of type </span><span class="si">{direct_dependency_name!r}</span><span class="s2"> &quot;</span>
                     <span class="s2">&quot;were removed by pipeline sieves&quot;</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stack_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -1298,14 +1291,14 @@
 
             <span class="k">if</span> <span class="n">report</span><span class="o">.</span><span class="n">product_count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Resolver did not find any stack that would satisfy requirements and stack &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;characteristics given the time allocated&quot;</span>
+                    <span class="n">f</span><span class="s2">&quot;Resolver did not find any stack that would satisfy requirements and stack &quot;</span>
+                    <span class="n">f</span><span class="s2">&quot;characteristics given the time allocated&quot;</span>
                 <span class="p">)</span>
                 <span class="n">link</span> <span class="o">=</span> <span class="n">jl</span><span class="p">(</span><span class="s2">&quot;no_stack&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stack_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;link&quot;</span><span class="p">:</span> <span class="n">link</span><span class="p">,}</span>
                 <span class="p">)</span>
-                <span class="k">raise</span> <span class="n">CannotProduceStack</span><span class="p">(</span><span class="n">msg</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;- see </span><span class="si">{</span><span class="n">link</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">stack_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stack_info</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">CannotProduceStack</span><span class="p">(</span><span class="n">msg</span> <span class="o">+</span> <span class="n">f</span><span class="s2">&quot;- see </span><span class="si">{link}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">stack_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stack_info</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stack_info</span><span class="p">:</span>
                 <span class="n">report</span><span class="o">.</span><span class="n">set_stack_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stack_info</span><span class="p">)</span>
@@ -1392,7 +1385,7 @@
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">PipelineConfigurationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown pipeline configuration type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">)</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">PipelineConfigurationError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unknown pipeline configuration type: {type(pipeline_config)!r}&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">beam_width</span><span class="o">=</span><span class="n">beam_width</span><span class="p">,</span>
@@ -1438,7 +1431,7 @@
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">PipelineConfigurationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown pipeline configuration type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">)</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">PipelineConfigurationError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unknown pipeline configuration type: {type(pipeline_config)!r}&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">beam_width</span><span class="o">=</span><span class="n">beam_width</span><span class="p">,</span>
@@ -1482,15 +1475,18 @@
     </div>
 
   
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123174547-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-123174547-1');
+    </script>
 
   </body>
 </html>

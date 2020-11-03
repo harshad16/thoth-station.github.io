@@ -16,17 +16,10 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Wrap pipeline unit type" href="wraps.html" />
     <link rel="prev" title="Step pipeline unit type" href="steps.html" />
-
    
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-123174547-2']);
-  _gaq.push(['_trackPageview']);
-</script>
 
   </head><body>
   
@@ -131,13 +124,13 @@ users on actions performed in pipeline units implemented</span></a>.</p>
 <span class="k">class</span> <span class="nc">StrideExample</span><span class="p">(</span><span class="n">Stride</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Flip a coin, heads discard the given state.&quot;&quot;&quot;</span>
 
-    <span class="n">CONFIGURATION_DEFAULT</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;package_name&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>  <span class="c1"># The pipeline unit is not specific to any package.</span>
+    <span class="n">CONFIGURATION_DEFAULT</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;package_name&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">}</span>  <span class="c1"># The pipeline unit is not specific to any package.</span>
 
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;The main entry-point for stride implementation demonstration.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">getrandbits</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="n">NotAcceptable</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;State with score </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">score</span><span class="si">!r}</span><span class="s2"> was randomly discarded by flipping a coin&quot;</span>
+                <span class="n">f</span><span class="s2">&quot;State with score {state.score!r} was randomly discarded by flipping a coin&quot;</span>
             <span class="p">)</span>
 </pre></div>
 </div>
@@ -193,15 +186,18 @@ See <a class="reference internal" href="unit.html#unit"><span class="std std-ref
     </div>
 
   
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123174547-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-123174547-1');
+    </script>
 
   </body>
 </html>

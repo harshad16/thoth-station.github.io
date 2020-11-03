@@ -16,17 +16,10 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Boot pipeline unit type" href="boots.html" />
     <link rel="prev" title="Advised manifest changes" href="manifest_changes.html" />
-
    
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-123174547-2']);
-  _gaq.push(['_trackPageview']);
-</script>
 
   </head><body>
   
@@ -87,7 +80,7 @@ pipeline.</p>
     <span class="k">if</span> <span class="n">builder_context</span><span class="o">.</span><span class="n">is_adviser_pipeline</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">builder_context</span><span class="o">.</span><span class="n">is_included</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;configuration1&quot;</span><span class="p">:</span> <span class="mf">0.33</span><span class="p">}</span>
 
-    <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="bp">None</span>
 </pre></div>
 </div>
 <p>The <a class="reference internal" href="thoth.adviser.html#thoth.adviser.unit.Unit.should_include" title="thoth.adviser.unit.Unit.should_include"><code class="xref py py-func docutils literal notranslate"><span class="pre">Unit.should_include</span></code></a> class
@@ -313,15 +306,18 @@ pieces matter a lot.</p>
     </div>
 
   
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123174547-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-123174547-1');
+    </script>
 
   </body>
 </html>

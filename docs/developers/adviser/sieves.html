@@ -16,17 +16,10 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Step pipeline unit type" href="steps.html" />
     <link rel="prev" title="Pseudonym pipeline unit type" href="pseudonyms.html" />
-
    
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-123174547-2']);
-  _gaq.push(['_trackPageview']);
-</script>
 
   </head><body>
   
@@ -183,9 +176,9 @@ users on actions performed in pipeline units implemented</span></a>.</p>
 <span class="k">class</span> <span class="nc">ExampleSieve</span><span class="p">(</span><span class="n">Sieve</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An example sieve implementation to demonstrate sieve purpose.&quot;&quot;&quot;</span>
 
-    <span class="n">CONFIGURATION_DEFAULT</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;package_name&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>  <span class="c1"># The pipeline unit is not specific to any package.</span>
+    <span class="n">CONFIGURATION_DEFAULT</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;package_name&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">}</span>  <span class="c1"># The pipeline unit is not specific to any package.</span>
 
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_versions</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="n">PackageVersion</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">PackageVersion</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_versions</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="n">PackageVersion</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">PackageVersion</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">]:</span>
         <span class="k">for</span> <span class="n">package_version</span> <span class="ow">in</span> <span class="n">package_versions</span><span class="p">:</span>
           <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">prereleases_allowed</span><span class="p">:</span>
               <span class="n">_LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -255,15 +248,18 @@ See <a class="reference internal" href="unit.html#unit"><span class="std std-ref
     </div>
 
   
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123174547-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-123174547-1');
+    </script>
 
   </body>
 </html>

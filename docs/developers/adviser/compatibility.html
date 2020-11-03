@@ -16,17 +16,10 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Developer’s guide to Thoth" href="developers_guide.html" />
     <link rel="prev" title="Integrating with Thoth" href="integration.html" />
-
    
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-123174547-2']);
-  _gaq.push(['_trackPageview']);
-</script>
 
   </head><body>
   
@@ -139,24 +132,24 @@ Thoth respects this configuration and software stacks produced that use
 from. To prevent installation undesired artifacts, artifacts digests are
 provided.</p>
 <p>An example of a <code class="docutils literal notranslate"><span class="pre">Pipfile</span></code> that configures two Python package indexes - <a class="reference external" href="https://pypi.org/simple">PyPI</a> and <a class="reference external" href="https://tensorflow.pypi.thoth-station.ninja/">AICoE Python package index</a>:</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[[source]]</span>
-<span class="n">url</span> <span class="o">=</span><span class="s">&quot;https://tensorflow.pypi.thoth-station.ninja/index/manylinux2010/AVX2/simple/&quot;</span>
-<span class="n">verify_ssl</span> <span class="o">=</span> <span class="kc">true</span>
-<span class="n">name</span> <span class="o">=</span> <span class="s">&quot;redhat-aicoe-experiments&quot;</span>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span>[[source]]
+url =&quot;https://tensorflow.pypi.thoth-station.ninja/index/manylinux2010/AVX2/simple/&quot;
+verify_ssl = true
+name = &quot;redhat-aicoe-experiments&quot;
 
-<span class="k">[[source]]</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s">&quot;https://pypi.python.org/simple&quot;</span>
-<span class="n">verify_ssl</span> <span class="o">=</span> <span class="kc">true</span>
-<span class="n">name</span> <span class="o">=</span> <span class="s">&quot;pypi&quot;</span>
+[[source]]
+url = &quot;https://pypi.python.org/simple&quot;
+verify_ssl = true
+name = &quot;pypi&quot;
 
-<span class="k">[requires]</span>
-<span class="n">python_version</span> <span class="o">=</span> <span class="s">&quot;3.6&quot;</span>
+[requires]
+python_version = &quot;3.6&quot;
 
-<span class="k">[packages]</span>
-<span class="n">tensorflow</span> <span class="o">=</span> <span class="p">{</span><span class="n">version</span><span class="o">=</span><span class="s">&quot;==2.0.0&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s">&quot;redhat-aicoe-experiments&quot;</span><span class="p">}</span>
+[packages]
+tensorflow = {version=&quot;==2.0.0&quot;, index=&quot;redhat-aicoe-experiments&quot;}
 
-<span class="k">[pipenv]</span>
-<span class="n">allow_prereleases</span> <span class="o">=</span> <span class="kc">true</span>
+[pipenv]
+allow_prereleases = true
 </pre></div>
 </div>
 </div>
@@ -231,15 +224,18 @@ an adviser run to spot such cases.</p>
     </div>
 
   
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123174547-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-123174547-1');
+    </script>
 
   </body>
 </html>

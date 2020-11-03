@@ -16,17 +16,10 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Pseudonym pipeline unit type" href="pseudonyms.html" />
     <link rel="prev" title="A pipeline unit" href="unit.html" />
-
    
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-123174547-2']);
-  _gaq.push(['_trackPageview']);
-</script>
 
   </head><body>
   
@@ -155,20 +148,20 @@ users on actions performed in pipeline units implemented</span></a>.</p>
 <span class="k">class</span> <span class="nc">ExampleBoot</span><span class="p">(</span><span class="n">Boot</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This is an example boot implementation.&quot;&quot;&quot;</span>
 
-  <span class="n">CONFIGURATION_DEFAULT</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;package_name&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>  <span class="c1"># The pipeline unit is not specific to any package.</span>
+  <span class="n">CONFIGURATION_DEFAULT</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;package_name&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">}</span>  <span class="c1"># The pipeline unit is not specific to any package.</span>
 
-  <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
       <span class="sd">&quot;&quot;&quot;Main entry-point for boot unit to demonstrate boot example.&quot;&quot;&quot;</span>
       <span class="n">cpu_family</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">runtime_environment</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">cpu_family</span>
 
-      <span class="k">if</span> <span class="n">cpu_family</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+      <span class="k">if</span> <span class="n">cpu_family</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
           <span class="n">known_cpu_families</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">get_cpu_family_all</span><span class="p">()</span>
           <span class="k">if</span> <span class="n">cpu_family</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">known_cpu_families</span><span class="p">:</span>
               <span class="n">_LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                   <span class="s2">&quot;CPU family used </span><span class="si">%s</span><span class="s2"> is not known, it will not be considered&quot;</span>
                   <span class="n">cpu_family</span>
               <span class="p">)</span>
-              <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">runtime_environment</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">cpu_family</span> <span class="o">=</span> <span class="kc">None</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">runtime_environment</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">cpu_family</span> <span class="o">=</span> <span class="bp">None</span>
               <span class="c1"># Or you can raise an exception causing adviser halt:</span>
               <span class="c1">#  raise ValueError(f&quot;CPU family used {cpu_family!r} is not known&quot;)</span>
 </pre></div>
@@ -225,15 +218,18 @@ See <a class="reference internal" href="unit.html#unit"><span class="std std-ref
     </div>
 
   
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123174547-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-123174547-1');
+    </script>
 
   </body>
 </html>

@@ -14,17 +14,10 @@
     <script type="text/javascript" src="/assets/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-
    
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-123174547-2']);
-  _gaq.push(['_trackPageview']);
-</script>
 
   </head><body>
   
@@ -75,24 +68,24 @@
 <span class="sd">error message.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Optional</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
-<span class="kn">from</span> <span class="nn">thoth.common</span> <span class="kn">import</span> <span class="n">get_justification_link</span> <span class="k">as</span> <span class="n">jl</span>
+<span class="kn">from</span> <span class="nn">thoth.common</span> <span class="k">import</span> <span class="n">get_justification_link</span> <span class="k">as</span> <span class="n">jl</span>
 
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">CannotProduceStack</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">UnresolvedDependencies</span>
-<span class="kn">from</span> <span class="nn">.dependency_monkey</span> <span class="kn">import</span> <span class="n">DependencyMonkey</span>
-<span class="kn">from</span> <span class="nn">.dm_report</span> <span class="kn">import</span> <span class="n">DependencyMonkeyReport</span>
-<span class="kn">from</span> <span class="nn">.report</span> <span class="kn">import</span> <span class="n">Report</span>
-<span class="kn">from</span> <span class="nn">.resolver</span> <span class="kn">import</span> <span class="n">Resolver</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">CannotProduceStack</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">UnresolvedDependencies</span>
+<span class="kn">from</span> <span class="nn">.dependency_monkey</span> <span class="k">import</span> <span class="n">DependencyMonkey</span>
+<span class="kn">from</span> <span class="nn">.dm_report</span> <span class="k">import</span> <span class="n">DependencyMonkeyReport</span>
+<span class="kn">from</span> <span class="nn">.report</span> <span class="k">import</span> <span class="n">Report</span>
+<span class="kn">from</span> <span class="nn">.resolver</span> <span class="k">import</span> <span class="n">Resolver</span>
 
 <span class="n">_LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="c1"># This file is created by OpenShift&#39;s liveness probe on timeout.</span>
@@ -132,9 +125,9 @@
                 <span class="n">file_name</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">extension</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="s2">&quot;png&quot;</span>
 
-                <span class="n">predictor_history_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">resolver</span><span class="o">.</span><span class="n">predictor</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="n">beam_history_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">resolver</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="n">resolver_history_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">_resolver.</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">predictor_history_file</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{file_name}</span><span class="s2">_</span><span class="si">{resolver.predictor.__class__.__name__}</span><span class="s2">.</span><span class="si">{extension}</span><span class="s2">&quot;</span>
+                <span class="n">beam_history_file</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{file_name}</span><span class="s2">_</span><span class="si">{resolver.beam.__class__.__name__}</span><span class="s2">.</span><span class="si">{extension}</span><span class="s2">&quot;</span>
+                <span class="n">resolver_history_file</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{file_name}</span><span class="s2">_resolver.</span><span class="si">{extension}</span><span class="s2">&quot;</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">figure</span> <span class="o">=</span> <span class="n">resolver</span><span class="o">.</span><span class="n">predictor</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
                     <span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">predictor_history_file</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">extension</span><span class="p">)</span>
@@ -194,13 +187,13 @@
         <span class="k">if</span> <span class="n">exit_code</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">_LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Child exited with exit code </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">exit_code</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">)</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
-                <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Resolver was killed as allocated memory has been exceeded (OOM) - </span><span class="si">{</span><span class="n">jl</span><span class="p">(</span><span class="s1">&#39;oom&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">err_msg</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;Resolver was killed as allocated memory has been exceeded (OOM) - {jl(&#39;oom&#39;)}&quot;</span>
             <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">_LIVENESS_PROBE_KILL_FILE</span><span class="p">):</span>
-                <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Resolver was killed as allocated CPU time was exceeded - </span><span class="si">{</span><span class="n">jl</span><span class="p">(</span><span class="s1">&#39;cpu_time_exceeded&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">err_msg</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;Resolver was killed as allocated CPU time was exceeded - {jl(&#39;cpu_time_exceeded&#39;)}&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Resolution was terminated based on errors encountered; &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;see logs for more info - </span><span class="si">{</span><span class="n">jl</span><span class="p">(</span><span class="s1">&#39;error_logs&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">f</span><span class="s2">&quot;Resolution was terminated based on errors encountered; &quot;</span>
+                    <span class="n">f</span><span class="s2">&quot;see logs for more info - {jl(&#39;error_logs&#39;)}&quot;</span>
                 <span class="p">)</span>
 
             <span class="n">_LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
@@ -245,15 +238,18 @@
     </div>
 
   
-<script type="text/javascript">
-  (function() {
-    var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ?
-              'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    ga.setAttribute('async', 'true');
-    document.documentElement.firstChild.appendChild(ga);
-  })();
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123174547-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-123174547-1');
+    </script>
 
   </body>
 </html>
